@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    //implement initState
     super.initState();
     this.checkAuthentication();
     this.getUser();
@@ -51,50 +51,88 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-      ),
-      body: Container(
-        child: Center(
-          child: !isSignedIn // setting isSignedIn to true
-              ? CircularProgressIndicator()
-              : Column(
+        appBar: AppBar(
+          iconTheme: new IconThemeData(color: Color(0xff1967d2)),
+          title: Text(
+            'TrackiT',
+            style: TextStyle(
+              color: Color(0xff1967d2),
+            ),
+          ),
+        ),
+        body: Container(
+          child: Center(
+            child: !isSignedIn // setting isSignedIn to true
+                ? CircularProgressIndicator()
+                : Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(top: 80),
+                      ),
+                    ],
+                  ),
+          ),
+        ),
+        drawer: Drawer(
+          // Add a ListView to the drawer. This ensures the user can scroll
+          // through the options in the drawer if there isn't enough vertical
+          // space to fit everything.
+
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                child: Column(
                   children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: 80),
-                    ),
-                    CircleAvatar(
-                      backgroundImage: user.photoUrl != null
-                          ? NetworkImage("${user.photoUrl}")
-                          : AssetImage('asset/index.png'),
-                      maxRadius: 40,
-                      minRadius: 30,
+                    Text(
+                      'TrackiT',
+                      style: TextStyle(fontSize: 16, color: Color(0xff1967d2)),
                     ),
                     Container(
-                      padding: EdgeInsets.all(50),
-                      child: Text(
-                        "Hello ${user.displayName == null ? user.email : user.displayName} you are logged in ",
-                        style: TextStyle(fontSize: 20),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          ClipOval(
+                            child: CircleAvatar(
+                              backgroundImage: user.photoUrl != null
+                                  ? NetworkImage("${user.photoUrl}")
+                                  : AssetImage('assets/user_icon.png'),
+                              maxRadius: 40,
+                              minRadius: 30,
+                            ),
+                          ),
+                          Text(
+                            user.displayName == null
+                                ? user.email
+                                : user.displayName,
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          )
+                        ],
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.all(20),
-                      child: RaisedButton(
-                        padding: EdgeInsets.fromLTRB(80, 15, 80, 15),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
-                        color: Colors.blue,
-                        onPressed: signout,
-                        child: Text(
-                          'Log Out',
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ),
-                    )
                   ],
                 ),
-        ),
-      ),
-    );
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                ),
+              ),
+              ListTile(
+                title: Text(
+                  'Log out',
+                  style: TextStyle(color: Color(0xff1967d2)),
+                ),
+                onTap: () async {
+                  signout();
+                  // Then close the drawer
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ));
   }
 }

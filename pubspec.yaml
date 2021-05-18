@@ -33,6 +33,7 @@ dependencies:
   google_sign_in: ^4.4.4
   cloud_firestore: ^0.13.7
   flutter_auth_buttons:
+  flutter_spinkit: "^4.1.2"
 
 dev_dependencies:
   flutter_test:

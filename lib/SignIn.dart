@@ -6,6 +6,7 @@ import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:trackit/shared/constants.dart';
+import 'package:trackit/shared/loading.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -23,7 +24,7 @@ class _SignInState extends State<SignIn> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   String _email, _passwaord;
-
+  bool loading = false;
   /* Checking whether the user is logged in or not when App starts */
 
   checkAuthentication() async {
@@ -123,142 +124,146 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-//      appBar: AppBar(
-//        title: Text('Sign In'),
-//      ),
-      body: Container(
-        child: Center(
-          child: ListView(
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 80),
-                  Container(
-                    width: 160,
-                    height: 160,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: AssetImage('assets/frontlogo.png'),
-                          fit: BoxFit.fill),
+    return loading
+        ? Loading()
+        : Scaffold(
+            body: Container(
+              child: Center(
+                child: ListView(
+                  children: <Widget>[
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(height: 80),
+                        Container(
+                          width: 160,
+                          height: 160,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: AssetImage('assets/frontlogo.png'),
+                                fit: BoxFit.fill),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                          padding: EdgeInsets.all(16),
+                          child: Form(
+                            key: _formkey,
+                            child: Column(
+                              children: <Widget>[
+                                // E-mail TextField
+                                Container(
+                                  child: TextFormField(
+                                    autofocus: false,
+                                    keyboardType: TextInputType.emailAddress,
+                                    cursorColor: Colors.white,
+                                    style: TextStyle(color: Colors.white),
+                                    validator: (input) {
+                                      if (input.isEmpty) {
+                                        return 'Provide an email';
+                                      }
+                                    },
+                                    decoration: textInputDecoration.copyWith(
+                                        hintText: 'E-mail'),
+                                    onSaved: (input) => _email = input,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(10),
+                                ),
+                                // Password TextField
+                                Container(
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.visiblePassword,
+                                    cursorColor: Colors.white,
+                                    style: TextStyle(color: Colors.white),
+                                    obscureText: true,
+                                    validator: (input) {
+                                      if (input.length < 6) {
+                                        return 'Password must be atleast 6 char long';
+                                      }
+                                    },
+                                    decoration: textInputDecoration.copyWith(
+                                        hintText: 'Password'),
+                                    onSaved: (input) => _passwaord = input,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 40),
+                                ),
+                                //  Sign In button
+                                RaisedButton(
+                                    padding:
+                                        EdgeInsets.fromLTRB(80, 15, 80, 15),
+                                    color: Colors.pink[400],
+                                    hoverColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    onPressed: signin,
+                                    child: Text(
+                                      'Log In',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 20),
+                                    )),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 20),
+                                ),
+                                Text(
+                                  "- OR -",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 20.0, color: Colors.blue),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 16),
+                                ),
+                                GoogleSignInButton(
+                                  onPressed: () {
+                                    _signInWithGoogle()
+                                        .then(
+                                            (FirebaseUser user) => print(user))
+                                        .catchError((e) => print(e));
+                                  },
+                                  borderRadius: 20,
+                                ),
+                                // Text Button to Sign Up page
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    navigateToSignUpScreen();
+                                    setState(() => loading = true);
+                                  },
+                                  child: Text(
+                                    'Create an account',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 16.0, color: Colors.blue),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    child: Form(
-                      key: _formkey,
-                      child: Column(
-                        children: <Widget>[
-                          // E-mail TextField
-                          Container(
-                            child: TextFormField(
-                              autofocus: false,
-                              keyboardType: TextInputType.emailAddress,
-                              cursorColor: Colors.white,
-                              style: TextStyle(color: Colors.white),
-                              validator: (input) {
-                                if (input.isEmpty) {
-                                  return 'Provide an email';
-                                }
-                              },
-                              decoration: textInputDecoration.copyWith(
-                                  hintText: 'E-mail'),
-                              onSaved: (input) => _email = input,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                          ),
-                          // Password TextField
-                          Container(
-                            child: TextFormField(
-                              keyboardType: TextInputType.visiblePassword,
-                              cursorColor: Colors.white,
-                              style: TextStyle(color: Colors.white),
-                              obscureText: true,
-                              validator: (input) {
-                                if (input.length < 6) {
-                                  return 'Password must be atleast 6 char long';
-                                }
-                              },
-                              decoration: textInputDecoration.copyWith(
-                                  hintText: 'Password'),
-                              onSaved: (input) => _passwaord = input,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 40),
-                          ),
-                          //  Sign In button
-                          RaisedButton(
-                              padding: EdgeInsets.fromLTRB(80, 15, 80, 15),
-                              color: Colors.pink[400],
-                              hoverColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              onPressed: signin,
-                              child: Text(
-                                'Log In',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20),
-                              )),
-                          Padding(
-                            padding: EdgeInsets.only(top: 20),
-                          ),
-                          Text(
-                            "- OR -",
-                            textAlign: TextAlign.center,
-                            style:
-                                TextStyle(fontSize: 20.0, color: Colors.blue),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 16),
-                          ),
-                          GoogleSignInButton(
-                            onPressed: () {
-                              _signInWithGoogle()
-                                  .then((FirebaseUser user) => print(user))
-                                  .catchError((e) => print(e));
-                            },
-                            borderRadius: 20,
-                          ),
-                          // Text Button to Sign Up page
-                          SizedBox(
-                            height: 15,
-                          ),
-                          TextButton(
-                            onPressed: navigateToSignUpScreen,
-                            child: Text(
-                              'Create an account',
-                              textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(fontSize: 16.0, color: Colors.blue),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              //elevation: 20,
-              // shape: BeveledRectangleBorder(
-              //     borderRadius: BorderRadius.only(
-              //   topLeft: Radius.circular(150),
-              // )),
+                    //elevation: 20,
+                    // shape: BeveledRectangleBorder(
+                    //     borderRadius: BorderRadius.only(
+                    //   topLeft: Radius.circular(150),
+                    // )),
 
-              // Padding(
-              //   padding: EdgeInsets.all(10),
-              // ),
-            ],
-          ),
-        ),
-      ),
-    );
+                    // Padding(
+                    //   padding: EdgeInsets.all(10),
+                    // ),
+                  ],
+                ),
+              ),
+            ),
+          );
   }
 }
