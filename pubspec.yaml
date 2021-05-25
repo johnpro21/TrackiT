@@ -39,6 +39,7 @@ dependencies:
   slide_popup_dialog: ^0.0.2
   md2_tab_indicator: ^1.0.2
   url_launcher: ^6.0.4
+  fluttertoast: ^8.0.7
 dev_dependencies:
   flutter_test:
     sdk: flutter

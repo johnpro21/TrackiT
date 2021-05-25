@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-
-import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
-
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:trackit_hosp/shared/constants.dart';
 import 'package:trackit_hosp/shared/loading.dart';
+import 'package:trackit_hosp/shared/loading_on_button.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -17,7 +14,6 @@ class _SignInState extends State<SignIn> {
   /* Intialize FirebaseAuth & GoogleSignIn and give an instance */
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   /* Creating key to check FormState(status) */
 
@@ -58,52 +54,21 @@ class _SignInState extends State<SignIn> {
   void signin() async {
     if (_formkey.currentState.validate()) {
       _formkey.currentState.save();
-
       try {
         AuthResult user = await _auth.signInWithEmailAndPassword(
           email: _email,
           password: _passwaord,
         );
       } catch (e) {
-        showError(e);
+        //print(e.message);
+        showError(e.toString());
       }
     }
   }
 
-  /* Google Sign In & Sign Out Method */
-
-  Future<FirebaseUser> _signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount googleSignInAccount =
-          await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount.authentication;
-
-      final AuthCredential authCredential = GoogleAuthProvider.getCredential(
-          idToken: googleSignInAuthentication.idToken,
-          accessToken: googleSignInAuthentication.accessToken);
-
-      final AuthResult authResult =
-          await _auth.signInWithCredential(authCredential);
-      final FirebaseUser user = authResult.user;
-
-      assert(user.email != null);
-      assert(user.displayName != null);
-
-      assert(!user.isAnonymous);
-      assert(await user.getIdToken() != null);
-
-      final FirebaseUser currentuser = await _auth.currentUser();
-      assert(user.uid == currentuser.uid);
-      print(user.email);
-
-      return user;
-    } catch (e) {}
-  }
-
   /* Showing the error message */
 
-  showError(String errormessage) {
+  void showError(String errormessage) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -213,25 +178,7 @@ class _SignInState extends State<SignIn> {
                                 Padding(
                                   padding: EdgeInsets.only(top: 20),
                                 ),
-                                // Text(
-                                //   "- OR -",
-                                //   textAlign: TextAlign.center,
-                                //   style: TextStyle(
-                                //       fontSize: 20.0, color: Colors.blue),
-                                // ),
-                                // Padding(
-                                //   padding: EdgeInsets.only(top: 16),
-                                // ),
-                                // GoogleSignInButton(
-                                //   onPressed: () {
-                                //     _signInWithGoogle()
-                                //         .then(
-                                //             (FirebaseUser user) => print(user))
-                                //         .catchError((e) => print(e));
-                                //   },
-                                //   borderRadius: 20,
-                                // ),
-                                // Text Button to Sign Up page
+
                                 SizedBox(
                                   height: 15,
                                 ),
@@ -253,15 +200,6 @@ class _SignInState extends State<SignIn> {
                         )
                       ],
                     ),
-                    //elevation: 20,
-                    // shape: BeveledRectangleBorder(
-                    //     borderRadius: BorderRadius.only(
-                    //   topLeft: Radius.circular(150),
-                    // )),
-
-                    // Padding(
-                    //   padding: EdgeInsets.all(10),
-                    // ),
                   ],
                 ),
               ),

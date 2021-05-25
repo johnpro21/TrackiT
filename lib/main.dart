@@ -25,10 +25,10 @@ class MyApp extends StatelessWidget {
     ]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Firebase Loogin',
+      title: 'TrackiT Hospital',
       theme: ThemeData(
         brightness: Brightness.light,
-        backgroundColor: Colors.grey[50],
+        backgroundColor: Colors.grey[100],
         appBarTheme: AppBarTheme(color: Colors.white),
 
         /* light theme settings */
