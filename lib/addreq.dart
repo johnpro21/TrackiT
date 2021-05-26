@@ -33,8 +33,6 @@ class AddReq extends StatelessWidget {
           context: context,
           backgroundColor: themeData.appBarTheme.color,
           child: Expanded(
-            //padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            //controller: controller,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

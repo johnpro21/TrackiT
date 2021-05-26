@@ -137,12 +137,14 @@ class _HomePageState extends State<HomePage> {
                       TextButton(
                         child: Text("Save"),
                         onPressed: () {
-                          setState(() {
-                            mainselctDist = hselctDist;
-                          });
+                          if (distkey.currentState.validate()) {
+                            setState(() {
+                              mainselctDist = hselctDist;
+                            });
 
-                          print(mainselctDist);
-                          Navigator.pop(context);
+                            print(mainselctDist);
+                            Navigator.pop(context);
+                          }
                         },
                       )
                     ],
@@ -553,10 +555,6 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ),
                                           );
-                                          // ListTile(
-                                          //   title: Text(data['reqstnt_name']),
-                                          //   subtitle: Text(data['description']),
-                                          // );
                                         },
                                       );
                               },
