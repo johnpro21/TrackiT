@@ -23,7 +23,7 @@ BFH/rec0LvkTEerYBkPH7/2021
 11. In the Drawer you have basic details of account and you can `LogOut` there. 
 
 
-Embed video of project demo
+[Video of project demo](https://www.loom.com/share/f36bd32fb5c34862bfc9e071c40bdd51)
 ## Libraries used
 ```
   cupertino_icons: ^1.0.2
